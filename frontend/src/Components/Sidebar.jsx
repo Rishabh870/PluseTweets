@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
-import { IoHome } from 'react-icons/io5';
-import { HiUser } from 'react-icons/hi2';
-import { MdLogout } from 'react-icons/md';
-import { BiMessageRoundedDetail } from 'react-icons/bi';
-import { styled } from 'styled-components';
-import requestMethod from '../requestMethod';
-import Img from '../Images/default.jpg';
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import { IoHome } from "react-icons/io5";
+import { HiUser } from "react-icons/hi2";
+import { MdLogout } from "react-icons/md";
+import { BiMessageRoundedDetail } from "react-icons/bi";
+import { styled } from "styled-components";
+import requestMethod from "../requestMethod";
+import Img from "../Images/default.jpg";
 const Logo = styled.div`
   font-size: 2rem;
   color: #0d6efd;
@@ -20,7 +20,7 @@ const StyledNavLink = styled(NavLink)`
   border-radius: 20rem;
   color: black;
   /* background-color: ${({ isActive }) =>
-    isActive ? 'blue' : 'transparent'}; */
+    isActive ? "blue" : "transparent"}; */
   &.active {
     background-color: #008cff;
     color: white;
@@ -38,17 +38,19 @@ const LogoutBtn = styled.p`
   border-radius: 20rem;
   cursor: pointer;
   color: black;
+  &:hover {
+    background-color: #008cff;
+    color: white;
+  }
 `;
 const Username = styled.p`
   font-size: small;
   cursor: auto;
-  color: black;
 `;
 const Name = styled.h6`
   font-size: medium;
   cursor: auto;
   font-weight: bold;
-  color: black;
 `;
 
 const IconWrapper = styled.p`
@@ -60,8 +62,8 @@ const IconWrapper = styled.p`
 
 const ProfileImage = styled.img`
   border-radius: 9999px;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
 `;
 
 const NameWrapper = styled.div`
@@ -74,8 +76,10 @@ const UserSectionConatiner = styled(NavLink)`
   padding: 0.2rem 1rem;
   text-decoration: none;
   border-radius: 9999px;
+  color: black;
   &:hover {
-    background-color: lightskyblue;
+    background-color: #008cff;
+    color: white;
   }
 `;
 
@@ -85,17 +89,17 @@ const Sidebar = () => {
 
   // Function to handle logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    window.location.href = '/login';
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    window.location.href = "/login";
   };
 
   // Fetch user data on component mount
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const userId = localStorage.getItem('userId');
-        const response = await requestMethod('GET', `/user/${userId}`);
+        const userId = localStorage.getItem("userId");
+        const response = await requestMethod("GET", `/user/${userId}`);
         setUserData(response);
       } catch (error) {}
     };
@@ -103,43 +107,43 @@ const Sidebar = () => {
     getUserData();
   }, []);
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem("userId");
   return (
-    <Container className='d-flex h-100 px-4 py-2 flex-column'>
+    <Container className="d-flex h-100 px-4 py-2 flex-column">
       {/* Sidebar Logo */}
       <Logo>
         <BiMessageRoundedDetail />
       </Logo>
-      <div className='d-flex navbar-nav py-2 flex-column'>
+      <div className="d-flex navbar-nav py-2 flex-column">
         {/* Home NavLink */}
-        <StyledNavLink to='/' activeclassname='active'>
+        <StyledNavLink to="/" activeclassname="active">
           <IconWrapper>
             <IoHome />
-            <span className='mx-2'>Home</span>
+            <span className="mx-2">Home</span>
           </IconWrapper>
         </StyledNavLink>
         {/* Profile NavLink */}
-        <StyledNavLink to={`/profile/${userId}`} activeclassname='active'>
+        <StyledNavLink to={`/profile/${userId}`} activeclassname="active">
           <IconWrapper>
             <HiUser />
-            <span className='mx-2'>Profile</span>
+            <span className="mx-2">Profile</span>
           </IconWrapper>
         </StyledNavLink>
         {/* Logout Button */}
         <LogoutBtn>
           <IconWrapper onClick={handleLogout}>
             <MdLogout />
-            <span className='mx-2'>Logout</span>
+            <span className="mx-2">Logout</span>
           </IconWrapper>
         </LogoutBtn>
       </div>
-      <div className=' flex-grow-1'></div>
+      <div className=" flex-grow-1"></div>
       {/* User Profile Section */}
       <UserSectionConatiner
         to={`/profile/${userId}`}
-        className='d-flex mb-3 align-items-center'
+        className="d-flex mb-3 align-items-center"
       >
-        <div className=' my-auto d-flex align-items-center'>
+        <div className=" my-auto d-flex align-items-center">
           {/* User Profile Image */}
           <ProfileImage
             src={
@@ -147,13 +151,13 @@ const Sidebar = () => {
                 ? `http://localhost:5000/` + userData.profilePic
                 : Img
             }
-            alt=''
+            alt=""
           />
         </div>
         {/* User Name and Username */}
         <NameWrapper>
-          <Name className='mb-0'>{userData.name}</Name>
-          <Username className='mb-0'>@{userData.username}</Username>
+          <Name className="mb-0">{userData.name}</Name>
+          <Username className="mb-0">@{userData.username}</Username>
         </NameWrapper>
       </UserSectionConatiner>
     </Container>

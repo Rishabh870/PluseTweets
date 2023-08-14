@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Container } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { BiMessageRoundedDetail } from 'react-icons/bi';
-import { styled } from 'styled-components';
-import requestMethod from '../requestMethod';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import { Container } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { BiMessageRoundedDetail } from "react-icons/bi";
+import { styled } from "styled-components";
+import requestMethod from "../requestMethod";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Contain = styled(Container)`
   height: 100vh;
   display: flex;
   align-items: center;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const LeftDiv = styled.div`
@@ -45,7 +45,7 @@ const Button = styled.button`
   width: fit-content;
   color: white;
   border: none;
-  cursor: ${(props) => (props.loading ? 'not-allowed' : 'pointer')};
+  cursor: ${(props) => (props.loading ? "not-allowed" : "pointer")};
 `;
 
 const Register = styled(Link)`
@@ -73,8 +73,8 @@ const Icon = styled(BiMessageRoundedDetail)`
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,13 +87,14 @@ const Login = () => {
         password,
       };
 
-      console.log(formData);
+      // console.log(formData);
 
-      const response = await requestMethod('POST', '/auth/login', formData);
-      toast.success('Login successful!');
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('userId', response.userId);
-      window.location.href = '/login';
+      const response = await requestMethod("POST", "/auth/login", formData);
+      toast.success("Login successful!");
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("userId", response.userId);
+      navigate("/");
+      // window.location.href = "/login";
     } catch (error) {
       console.log(error.response.data);
       toast.error(`Login failed. ${error.response.data.error}.`);
@@ -103,41 +104,41 @@ const Login = () => {
   return (
     <Contain>
       <div
-        style={{ borderRadius: '1rem', width: '45rem', height: '26.3rem' }}
-        className='row mx-auto shadow'
+        style={{ borderRadius: "1rem", width: "45rem", height: "26.3rem" }}
+        className="row mx-auto shadow"
       >
-        <LeftDiv className='col-5'>
+        <LeftDiv className="col-5">
           <div>
-            <h4 className=' text-white'>Welcome back</h4>
+            <h4 className=" text-white">Welcome back</h4>
           </div>
           <div>
             <Icon />
           </div>
         </LeftDiv>
-        <RightDiv className='col-7 mx-auto pt-4 px-3 pb-3'>
-          <h2 className='mb-3 fw-bold mt-2'>Login</h2>
+        <RightDiv className="col-7 mx-auto pt-4 px-3 pb-3">
+          <h2 className="mb-3 fw-bold mt-2">Login</h2>
           <Form onSubmit={handleSubmit}>
             <Input
-              className='form-control mb-3'
-              placeholder='Email or Username'
+              className="form-control mb-3"
+              placeholder="Email or Username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input
-              className='form-control mb-3'
-              type='password'
-              placeholder='Password'
+              className="form-control mb-3"
+              type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button className='btn btn-dark' type='submit' loading={loading}>
-              {loading ? 'Loading...' : 'Submit'}
+            <Button className="btn btn-dark" type="submit" loading={loading}>
+              {loading ? "Loading..." : "Submit"}
             </Button>
           </Form>
           <RegisterAccount>
             Doesn't have an account?
             <span>
-              <Register to='/register'>Register</Register>
+              <Register to="/register">Register</Register>
             </span>
           </RegisterAccount>
         </RightDiv>

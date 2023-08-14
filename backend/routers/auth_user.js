@@ -1,14 +1,14 @@
 // Import required modules and models
-const express = require('express');
-const UserModel = require('../models/user_model');
-const bcrypt = require('bcrypt');
+const express = require("express");
+const UserModel = require("../models/user_model");
+const bcrypt = require("bcrypt");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config');
-const authUser = require('../middleware/verifyToken');
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config");
+const authUser = require("../middleware/verifyToken");
 
 // Route for user registration
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { name, username, email, password } = req.body;
 
@@ -17,11 +17,11 @@ router.post('/register', async (req, res) => {
     const existingEmailUser = await UserModel.findOne({ email });
 
     if (existingEmailUser) {
-      return res.status(400).json({ error: 'Email already exists' });
+      return res.status(400).json({ error: "Email already exists" });
     }
 
     if (existingUsernameUser) {
-      return res.status(400).json({ error: 'Username already exists' });
+      return res.status(400).json({ error: "Username already exists" });
     }
 
     // Hash the password before saving it to the database
@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Route for user login
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { loginIdentifier, password } = req.body;
 
@@ -62,7 +62,7 @@ router.post('/login', async (req, res) => {
 
     // If the user is not found, return a generic error message without specifying the reason
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     // Compare the provided password with the stored hashed password
@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
 
     // If passwords don't match, return a generic error message without specifying the reason
     if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     // Create a JWT token and send it back along with the user ID

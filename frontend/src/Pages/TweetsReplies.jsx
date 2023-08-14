@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
-import TweetCard from '../Components/TweetCard';
-import { Container } from 'react-bootstrap';
-import Sidebar from '../Components/Sidebar';
-import { useNavigate, useParams } from 'react-router-dom';
-import requestMethod from '../requestMethod';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { styled } from "styled-components";
+import TweetCard from "../Components/TweetCard";
+import { Container } from "react-bootstrap";
+import Sidebar from "../Components/Sidebar";
+import { useNavigate, useParams } from "react-router-dom";
+import requestMethod from "../requestMethod";
+import { NavLink } from "react-router-dom";
 import {
   FaRegHeart,
   FaHeart,
   FaRetweet,
   FaRegCommentDots,
-} from 'react-icons/fa6';
-import { RiDeleteBin2Line } from 'react-icons/ri';
-import { Modal } from 'react-bootstrap';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Img from '../Images/default.jpg';
+} from "react-icons/fa6";
+import { RiDeleteBin2Line } from "react-icons/ri";
+import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Img from "../Images/default.jpg";
 
 // Left Component
 const LeftSection = styled.div`
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   border-right: 2px solid #f3f3f3;
   max-width: 15rem;
   height: 100%;
@@ -38,14 +38,28 @@ const Title = styled.h5`
 const RightSection = styled.div`
   padding: 16px;
   height: 100%;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   border-right: 2px solid #f3f3f3;
   overflow-y: auto; /* Enable vertical scrolling for the right section */
   flex: 1; /* Allow the right section to occupy remaining space */
+  /* Scrollbar Styles */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #f8f9fa #dee2e6; /* Firefox */
   -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
-  scrollbar-width: 1px; /* Hide scrollbar in Firefox */
   &::-webkit-scrollbar {
-    display: none; /* Hide scrollbar in Chrome and Safari */
+    width: 8px; /* Chrome, Safari, and Opera */
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #adb5bd; /* Color of the thumb */
+    border-radius: 4px; /* Border radius of the thumb */
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #6c757d; /* Color of the thumb on hover */
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #dee2e6; /* Color of the track */
+    border-radius: 4px; /* Border radius of the track */
+    margin-right: -8px; /* Adjust for the border width */
   }
 `;
 
@@ -109,42 +123,56 @@ const Button = styled.p`
 const ProfileImage = styled.img`
   border-radius: 9999px;
   width: 3.2rem;
+
   height: 3.2rem;
 `;
 
 const PostImg = styled.img`
   width: 100%;
+  max-height: 20rem;
+  object-fit: contain;
   margin-bottom: 0.5rem;
 `;
 
 const TweetsReplies = () => {
-  const currentUser = localStorage.getItem('token');
+  const currentUser = localStorage.getItem("token");
   if (currentUser === null || currentUser === undefined) {
     console.log(currentUser);
     // naivgate('/login');
-    window.location.href = '/login';
+    window.location.href = "/login";
   }
   const [openTweet, setOpenTweet] = useState([]);
   const params = useParams();
   const [showModal, setShowModal] = useState(false);
-  const [textareaValue, setTextareaValue] = useState('');
+  const [textareaValue, setTextareaValue] = useState("");
   const [isLiked, setIsLiked] = useState(false);
   const [isRetweeted, setIsRetweeted] = useState(false);
   const [update, setUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
+
+  const formatDate = (date) => {
+    const convertDate = new Date(date);
+    const formattedDate = convertDate.toLocaleString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    return formattedDate;
+  };
   const handleClose = () => {
     setShowModal(false);
   };
 
   const handlePost = () => {
     try {
-      const response = requestMethod('POST', `/tweet/${openTweet._id}/reply`, {
+      const response = requestMethod("POST", `/tweet/${openTweet._id}/reply`, {
         content: textareaValue,
       });
-      toast.success('You Have Posted A Reply');
+      toast.success("You Have Posted A Reply");
       setShowModal(false);
-      setTextareaValue('');
+      setTextareaValue("");
     } catch (error) {
       toast.error(`Posting Reply Failed. ${error.response.data.error}.`);
     }
@@ -153,10 +181,10 @@ const TweetsReplies = () => {
   const handleLikeClick = async () => {
     try {
       const response = await requestMethod(
-        'POST',
+        "POST",
         `/tweet/${openTweet._id}/like`
       );
-      toast.success('You Have Liked A Post');
+      toast.success("You Have Liked A Post");
       setIsLiked(true);
     } catch (error) {
       toast.error(`Liking A Post Failed. ${error.response.data.error}.`);
@@ -165,10 +193,10 @@ const TweetsReplies = () => {
   const handleunLikeClick = async () => {
     try {
       const response = await requestMethod(
-        'POST',
+        "POST",
         `/tweet/${openTweet._id}/dislike`
       );
-      toast.success('You Have Unliked A Post');
+      toast.success("You Have Unliked A Post");
       setIsLiked(false);
     } catch (error) {
       toast.error(`Unliking A Post Failed. ${error.response.data.error}.`);
@@ -177,10 +205,10 @@ const TweetsReplies = () => {
   const handleRetweetClick = async () => {
     try {
       const response = await requestMethod(
-        'POST',
+        "POST",
         `/tweet/${openTweet._id}/retweet`
       );
-      toast.success('You Have Retweeted A Post');
+      toast.success("You Have Retweeted A Post");
       setIsRetweeted(true);
     } catch (error) {
       toast.error(`Retweeting A Post Failed. ${error.response.data.error}.`);
@@ -194,10 +222,10 @@ const TweetsReplies = () => {
   // Function to handle deleting a tweet
   const handleDelete = async (tweetId) => {
     try {
-      const response = await requestMethod('DELETE', `/tweet/${tweetId}`);
-      toast.success('Deleted successful!');
+      const response = await requestMethod("DELETE", `/tweet/${tweetId}`);
+      toast.success("Deleted successful!");
       setUpdate(!update);
-      navigate('/');
+      navigate("/");
     } catch (error) {
       toast.error(`Deleting A Post Failed. ${error.response.data.error}.`);
     }
@@ -205,17 +233,17 @@ const TweetsReplies = () => {
 
   const handleShow = () => setShowModal(true);
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem("userId");
   const imagePathFromServer = openTweet?.image;
 
   // Assuming userData.createdAt is provided and valid
   const dateObject = openTweet.createdAt ? new Date(openTweet.createdAt) : null;
-  const dateString = dateObject ? dateObject.toISOString().split('T')[0] : '';
+  const dateString = dateObject ? dateObject.toISOString().split("T")[0] : "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestMethod('GET', `/tweet/${params.id}`);
+        const response = await requestMethod("GET", `/tweet/${params.id}`);
         setIsLiked(false);
         setOpenTweet(response);
         setIsLoaded(true);
@@ -246,30 +274,30 @@ const TweetsReplies = () => {
   }, [params.id, openTweet, userId]);
 
   return (
-    <Container className='px-lg-5' style={{ height: '100vh' }}>
+    <Container className="px-lg-5" style={{ height: "100vh" }}>
       <div
-        style={{ minWidth: '48rem', maxWidth: '50rem' }}
-        className='mx-auto row h-100'
+        style={{ minWidth: "48rem", maxWidth: "50rem" }}
+        className="mx-auto row h-100"
       >
-        <LeftSection className='col-5 p-0'>
+        <LeftSection className="col-5 p-0">
           <Sidebar />
         </LeftSection>
-        <RightSection className='col-7'>
-          <div className=' mb-3 '>
+        <RightSection className="col-7">
+          <div className=" mb-3 ">
             <Title>Tweets</Title>
           </div>
           {isLoaded ? (
-            <div className=' my-3'>
+            <div className=" my-3">
               <div>
                 {openTweet.retweetBy.length ? (
                   <Retweeted>
-                    Recently Retweeted By -{' '}
+                    Recently Retweeted By -{" "}
                     {openTweet.retweetBy[openTweet.retweetBy.length - 1].name}
                   </Retweeted>
                 ) : null}
               </div>
-              <div className='d-flex'>
-                <div className=''>
+              <div className="d-flex">
+                <div className="">
                   <ProfileImage
                     src={
                       openTweet.tweetedBy?.profilePic
@@ -277,18 +305,18 @@ const TweetsReplies = () => {
                           openTweet.tweetedBy?.profilePic
                         : Img
                     }
-                    alt=''
+                    alt=""
                   />
                 </div>
-                <div className='ms-3 w-100'>
-                  <div className='text-start d-flex justify-content-between'>
+                <div className="ms-3 w-100">
+                  <div className="text-start d-flex justify-content-between">
                     <NavLink
-                      className={'text-decoration-none'}
+                      className={"text-decoration-none"}
                       to={`/profile/${openTweet?.tweetedBy?._id}`}
                     >
                       <p>
-                        <UserName>@{openTweet?.tweetedBy?.username}</UserName> -{' '}
-                        <TweetTime>{dateString}</TweetTime>
+                        <UserName>@{openTweet?.tweetedBy?.username}</UserName> -{" "}
+                        <TweetTime>{formatDate(dateString)}</TweetTime>
                       </p>
                     </NavLink>
                     {userId === openTweet.tweetedBy?._id ? (
@@ -296,31 +324,26 @@ const TweetsReplies = () => {
                         <RiDeleteBin2Line />
                       </DeleteButton>
                     ) : (
-                      ''
+                      ""
                     )}
                   </div>
 
-                  <NavLink
-                    className={'text-decoration-none , text-dark'}
-                    to={`/tweet/${openTweet._id}`}
-                  >
-                    <div className=''>
-                      <TweetContent>{openTweet.content}</TweetContent>
+                  <div className="">
+                    <TweetContent>{openTweet.content}</TweetContent>
+                  </div>
+                  {imagePathFromServer ? (
+                    <div className="">
+                      <PostImg
+                        src={`http://localhost:5000/` + imagePathFromServer}
+                        alt=""
+                      />
                     </div>
-                    {imagePathFromServer ? (
-                      <div className=''>
-                        <PostImg
-                          src={`http://localhost:5000/` + imagePathFromServer}
-                          alt=''
-                        />
-                      </div>
-                    ) : null}
-                  </NavLink>
-                  <div className=' d-flex'>
+                  ) : null}
+                  <div className=" d-flex">
                     {isLiked ? (
                       <Button onClick={handleunLikeClick}>
                         <IconWrapper>
-                          <FaHeart color='red' style={{ cursor: 'pointer' }} />
+                          <FaHeart color="red" style={{ cursor: "pointer" }} />
                         </IconWrapper>
 
                         <span>{openTweet.likes.length}</span>
@@ -329,8 +352,8 @@ const TweetsReplies = () => {
                       <Button onClick={handleLikeClick}>
                         <IconWrapper>
                           <FaRegHeart
-                            color='red'
-                            style={{ cursor: 'pointer' }}
+                            color="red"
+                            style={{ cursor: "pointer" }}
                           />
                         </IconWrapper>
 
@@ -340,23 +363,23 @@ const TweetsReplies = () => {
                     <Button onClick={handleRetweetClick}>
                       <IconWrapper>
                         <FaRetweet
-                          color={isRetweeted ? 'green' : 'lightgreen'}
-                          style={{ cursor: 'pointer' }}
+                          color={isRetweeted ? "green" : "lightgreen"}
+                          style={{ cursor: "pointer" }}
                         />
                       </IconWrapper>
                       <span>{openTweet.retweetBy?.length}</span>
                     </Button>
                     <Button onClick={handleShow}>
                       <IconWrapper>
-                        <FaRegCommentDots color='#00a2ff' />
+                        <FaRegCommentDots color="#00a2ff" />
                       </IconWrapper>
                       <span>{openTweet.replies?.length}</span>
                     </Button>
                   </div>
                 </div>
               </div>
-              <div className=' my-3'>
-                <p className='fw-bold'>Replies</p>
+              <div className=" my-3">
+                <p className="fw-bold">Replies</p>
                 {openTweet.replies?.map((tweet, index) => (
                   <TweetCard
                     tweet={tweet}
@@ -368,9 +391,9 @@ const TweetsReplies = () => {
               </div>
             </div>
           ) : (
-            <div className='justify-content-center d-flex align-items-center w-100 h-75'>
-              <div className='spinner-border ' role='status'>
-                <span className='visually-hidden'>Loading...</span>
+            <div className="justify-content-center d-flex align-items-center w-100 h-75">
+              <div className="spinner-border " role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
             </div>
           )}
@@ -383,17 +406,17 @@ const TweetsReplies = () => {
         </Modal.Header>
         <Modal.Body>
           <textarea
-            className='form-control'
-            style={{ width: '100%' }}
-            rows='4'
+            className="form-control"
+            style={{ width: "100%" }}
+            rows="4"
             value={textareaValue}
             onChange={handleChange}
           ></textarea>
         </Modal.Body>
         <Modal.Footer>
           <button
-            className='btn btn-primary'
-            variant='secondary '
+            className="btn btn-primary"
+            variant="secondary "
             onClick={handlePost}
           >
             Send
